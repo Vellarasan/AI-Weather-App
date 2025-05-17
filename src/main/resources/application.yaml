@@ -1,0 +1,25 @@
+spring:
+  application:
+  name: AI Weather Helper
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      chat:
+        options:
+          model: gpt-4
+external:
+  integrations:
+    zipcode:
+      apis:
+        api-key: ${ZIPCODE_BASE_API_KEY}
+        base-url: "https://app.zipcodebase.com/api/v1/code"
+        api-key-query: "apiKey"
+        state-query: "state_name"
+        country-query: "country"
+        city-query: "city"
+        by-city-uri: "/city?apikey={api-key}&city={city-name}&country={country-name}&limit=1"
+    weather:
+      apis:
+        api-key: ${WEATHER_API_KEY}
+        base-url: https://api.weatherapi.com/v1
+        forecast-by-zip-uri: "/forecast.json?key={api-key}&q={zip}&days={days}"
