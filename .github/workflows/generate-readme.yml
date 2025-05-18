@@ -2,11 +2,11 @@ name: Generate README
 
 on:
   workflow_dispatch:  # Manual trigger
-  push:
-    branches:
-      - master  # Or your default branch name
-    paths-ignore:
-      - 'README.md'  # Prevent infinite loops
+  #push:
+  #  branches:
+  #    - master  # Or your default branch name
+  #  paths-ignore:
+  #    - 'README.md'  # Prevent infinite loops
       
 jobs:
   generate-readme:
