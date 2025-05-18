@@ -1,18 +1,16 @@
 name: Generate README
 
 on:
-  workflow_dispatch:  # Manual trigger
-  #push:
-  #  branches:
-  #    - master  # Or your default branch name
-  #  paths-ignore:
-  #    - 'README.md'  # Prevent infinite loops
+  workflow_dispatch:  # Manual trigger only
+  
+# Add permissions needed for commits and PRs
+permissions:
+  contents: write
+  pull-requests: write
       
 jobs:
   generate-readme:
     runs-on: ubuntu-latest
-    environment:
-      name: Default
     
     steps:
       - name: Checkout repository
@@ -34,6 +32,12 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
+          echo "Checking for OpenAI API key..."
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "::error::OPENAI_API_KEY is not set. Please add it as a repository secret."
+            exit 1
+          fi
+          echo "API key found. Generating README..."
           python .github/scripts/generate_readme.py
           
       - name: Check for changes
@@ -44,8 +48,30 @@ jobs:
       - name: Commit and push if README changed
         if: steps.git-check.outputs.changes == 'true'
         run: |
+          # Create a new branch
+          git checkout -b update-readme-${{ github.run_id }}
+          
+          # Configure git
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          
+          # Commit changes
           git add README.md
           git commit -m "Auto-update README [skip ci]"
-          git push
+          
+          # Push using GITHUB_TOKEN
+          git push --set-upstream origin update-readme-${{ github.run_id }}
+          
+      - name: Create Pull Request
+        if: steps.git-check.outputs.changes == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: Auto-update README
+          title: "Auto-update README"
+          body: |
+            This PR updates the README.md file with auto-generated content.
+            
+            The content was generated based on repository analysis.
+          branch: update-readme-${{ github.run_id }}
+          base: ${{ github.ref }}
