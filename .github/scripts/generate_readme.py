@@ -3,13 +3,24 @@ import os
 import subprocess
 import glob
 import re
-import openai
+import sys
 from pathlib import Path
 
+# Check for OpenAI API key
+api_key = os.environ.get("OPENAI_API_KEY")
+if not api_key:
+    print("ERROR: OPENAI_API_KEY environment variable is not set!")
+    print("Please add your OpenAI API key as a repository secret named 'OPENAI_API_KEY'.")
+    print("1. Go to your repository settings")
+    print("2. Navigate to Secrets and variables > Actions")
+    print("3. Click on 'New repository secret'")
+    print("4. Name: OPENAI_API_KEY")
+    print("5. Value: Your OpenAI API key")
+    sys.exit(1)
+
+import openai
 # Setup OpenAI client
-openai.api_key = os.environ.get("OPENAI_API_KEY")
-if not openai.api_key:
-    raise ValueError("OPENAI_API_KEY environment variable must be set")
+openai.api_key = api_key
 
 def get_repo_info():
     """Gather basic repository information."""
@@ -30,20 +41,21 @@ def get_repo_info():
 def get_file_structure():
     """Get the file structure of the repository."""
     # Ignore common directories and files
-    ignore_patterns = [
-        ".git", ".github", "__pycache__", "node_modules", 
-        "*.pyc", "*.log", "*.lock", "*.env", "*.csv", "*.dat"
-    ]
+    ignore_directories = [".git", ".github", "__pycache__", "node_modules"]
+    ignore_extensions = [".pyc", ".log", ".lock", ".env", ".csv", ".dat"]
     
     file_paths = []
     for root, dirs, files in os.walk("."):
-        # Apply directory exclusions
-        dirs[:] = [d for d in dirs if not any(re.match(pattern, d) for pattern in ignore_patterns)]
+        # Filter out directories to ignore
+        dirs[:] = [d for d in dirs if d not in ignore_directories]
         
         for file in files:
-            if not any(re.match(pattern, file) for pattern in ignore_patterns):
-                file_path = os.path.join(root, file)
-                file_paths.append(file_path)
+            # Skip files with ignored extensions
+            if any(file.endswith(ext) for ext in ignore_extensions):
+                continue
+                
+            file_path = os.path.join(root, file)
+            file_paths.append(file_path)
     
     return file_paths
 
@@ -71,6 +83,19 @@ def analyze_code_files(file_paths, max_files=10):
                     })
                     if len(analyzed_files) >= max_files:
                         return analyzed_files
+                except UnicodeDecodeError:
+                    try:
+                        # Try with a different encoding
+                        with open(file, 'r', encoding='latin-1') as f:
+                            content = f.read()
+                        analyzed_files.append({
+                            "path": file,
+                            "content": content[:5000]
+                        })
+                        if len(analyzed_files) >= max_files:
+                            return analyzed_files
+                    except Exception as e:
+                        print(f"Error reading {file} with latin-1 encoding: {e}")
                 except Exception as e:
                     print(f"Error reading {file}: {e}")
     
@@ -96,6 +121,26 @@ def analyze_code_files(file_paths, max_files=10):
                 
                 if len(analyzed_files) >= max_files:
                     break
+            except UnicodeDecodeError:
+                try:
+                    # Try with a different encoding
+                    with open(file, 'r', encoding='latin-1') as f:
+                        content = f.read()
+                        
+                    # Skip empty files
+                    if not content.strip():
+                        continue
+                        
+                    analyzed_files.append({
+                        "path": file,
+                        "content": content[:5000]
+                    })
+                    
+                    if len(analyzed_files) >= max_files:
+                        break
+                except Exception:
+                    # Skip files that can't be read with either encoding
+                    continue
             except Exception:
                 # Skip files that can't be read as text
                 continue
@@ -141,17 +186,53 @@ def generate_readme(repo_info, file_structure, analyzed_files):
     Format the README using proper Markdown syntax with headers, code blocks, and bullet points.
     """
     
-    # Call OpenAI API
-    response = openai.chat.completions.create(
-        model="gpt-4o",  # Use appropriate model
-        messages=[
-            {"role": "system", "content": "You are an expert developer tasked with creating high-quality README files for GitHub repositories."},
-            {"role": "user", "content": prompt}
-        ],
-        max_tokens=2000
-    )
-    
-    return response.choices[0].message.content
+    try:
+        # Try the newer client format first
+        response = openai.chat.completions.create(
+            model="gpt-4o",  # Use appropriate model
+            messages=[
+                {"role": "system", "content": "You are an expert developer tasked with creating high-quality README files for GitHub repositories."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=2000
+        )
+        
+        # Extract content based on the API version
+        if hasattr(response.choices[0], 'message') and hasattr(response.choices[0].message, 'content'):
+            return response.choices[0].message.content
+        else:
+            return response.choices[0].message['content']
+            
+    except (AttributeError, TypeError):
+        try:
+            # Fall back to older client format
+            response = openai.ChatCompletion.create(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": "You are an expert developer tasked with creating high-quality README files for GitHub repositories."},
+                    {"role": "user", "content": prompt}
+                ],
+                max_tokens=2000
+            )
+            
+            return response.choices[0].message['content']
+        except Exception as e:
+            print(f"Error calling OpenAI API: {e}")
+            # Provide a minimal README if the API call fails
+            return f"""# {analyzed_data['repo_name']}
+
+This is an auto-generated README for this repository.
+
+## Repository Overview
+
+This repository contains {analyzed_data['file_count']} files.
+
+## Key Files
+
+{chr(10).join([f"- {file['path']}" for file in analyzed_files[:5]])}
+
+*Note: OpenAI API call failed, so this is a minimal README.*
+"""
 
 def main():
     """Main function to generate README."""
