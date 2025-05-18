@@ -1,0 +1,49 @@
+name: Generate README
+
+on:
+  workflow_dispatch:  # Manual trigger
+  push:
+    branches:
+      - master  # Or your default branch name
+    paths-ignore:
+      - 'README.md'  # Prevent infinite loops
+      
+jobs:
+  generate-readme:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history for better analysis
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install openai
+          
+      - name: Generate README
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          python .github/scripts/generate_readme.py
+          
+      - name: Check for changes
+        id: git-check
+        run: |
+          git diff --exit-code README.md || echo "changes=true" >> $GITHUB_OUTPUT
+          
+      - name: Commit and push if README changed
+        if: steps.git-check.outputs.changes == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git commit -m "Auto-update README [skip ci]"
+          git push
