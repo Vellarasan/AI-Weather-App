@@ -47,7 +47,6 @@ jobs:
         run: |
           git diff --exit-code README.md || echo "changes=true" >> $GITHUB_OUTPUT
           
-      # OPTION 1: Use only create-pull-request action (recommended)
       - name: Create Pull Request
         if: steps.git-check.outputs.changes == 'true'
         uses: peter-evans/create-pull-request@v5
@@ -60,27 +59,5 @@ jobs:
             
             The content was generated based on repository analysis.
           branch: update-readme-${{ github.run_id }}
-          base: ${{ github.ref }}
-          
-      # OPTION 2: Alternative approach (use only if option 1 doesn't work)
-      # - name: Commit and push if README changed (alternative)
-      #   if: steps.git-check.outputs.changes == 'true'
-      #   run: |
-      #     # Configure git
-      #     git config --local user.email "action@github.com"
-      #     git config --local user.name "GitHub Action"
-      #     
-      #     # Create a new branch
-      #     git checkout -b update-readme-${{ github.run_id }}
-      #     
-      #     # Commit changes
-      #     git add README.md
-      #     git commit -m "Auto-update README [skip ci]"
-      #     
-      #     # Push using GITHUB_TOKEN
-      #     git push --set-upstream origin update-readme-${{ github.run_id }}
-      #     
-      #     # Create PR using GitHub CLI (you'll need to add gh auth)
-      #     gh pr create --title "Auto-update README" \
-      #       --body "This PR updates the README.md file with auto-generated content." \
-      #       --base ${{ github.ref_name }}
+          delete-branch: true  # Clean up the branch after the PR is merged
+          base: ${{ github.ref_name }}  # Use ref_name instead of ref
