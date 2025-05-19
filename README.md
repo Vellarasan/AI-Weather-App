@@ -1,77 +1,110 @@
 # AI-Weather-App
 
-## Overview
-AI-Weather-App is an intelligent weather forecasting application that leverages AI capabilities to provide detailed weather forecasts and location-based zip code information. The application retrieves weather data from external APIs and delivers forecasts based on zip codes. Additionally, it utilizes chat client integrations for enhanced communication capabilities.
+## Project Overview
+AI-Weather-App is an intelligent weather application that integrates with various APIs to provide weather forecasts based on zipcode and city search functionality. It leverages AI-driven chat functionality to improve user interaction and provides integration capabilities with Atlassian Confluence for document management.
 
-## Key Features
-- **Weather Forecasting**: Obtain weather forecasts by zip code.
-- **Zip Code Retrieval**: Fetch all zip codes associated with a specific city in the US.
-- **AI Integrations**: Supports communication via AI chat clients with OpenAI models.
-  
 ## Installation Instructions
 
-1. **Clone the repository**:
-   ```bash
+To run the AI-Weather-App locally, follow these steps:
+
+1. **Clone the Repository**
+   ```sh
    git clone https://github.com/yourusername/AI-Weather-App.git
    cd AI-Weather-App
    ```
 
-2. **Set up environment variables**:
-   Ensure that you have the necessary API keys and other configurations set up for weather and zip code API integrations.
+2. **Set Up Your Environment**
 
-3. **Build and run the application**:
-   Using Maven, you can build and run the application using:
+   Ensure you have Java and Maven installed on your system.
 
-   ```bash
-   ./mvnw spring-boot:run
+3. **Configuration**
+
+   The application fetches configuration properties from `application.properties`. Ensure you have the relevant API keys and URLs set up in your configuration.
+
+4. **Build the Application**
+
+   Utilize Maven to install dependencies and build the application:
+
+   ```sh
+   mvn clean install
+   ```
+
+5. **Run the Application**
+
+   ```sh
+   mvn spring-boot:run
    ```
 
 ## Usage Examples
 
-To demonstrate the use of AI-Weather-App:
+- **Fetch Weather Forecast by Zip Code:**
 
-### Get Weather Forecast by Zip Code
-Using the web API client or any REST client tool, you can make a request to retrieve weather data for a specific zip code:
+  The application uses a REST client to fetch weather data by zip code:
 
-```bash
-GET /weather?zipCode=90210&daysCount=5
-```
+  ```java
+  WeatherResponse response = weatherClient.getForecastByZipForDays(12345, 5);
+  ```
 
-### Retrieve Zip Codes for a City
-Fetch zip codes by city using the following request:
+- **Interact with Atlassian Confluence:**
 
-```bash
-GET /zipcode?cityName=LosAngeles
-```
+  Use the provided Confluence client for interactions:
+
+  ```java
+  ConfluencePage page = confluenceClient.retrievePageById(pageId);
+  ```
+
+## Key Features
+
+- **Weather Forecasts:** Fetch weather data based on zip codes or city names.
+- **AI Chat Integration:** Using AI chat models to provide enhanced user interactions.
+- **Atlassian Confluence Integration:** Seamless retrieval and management of pages and spaces.
+- **Request Interception:** Intercept requests to generate curl commands and log them for auditing.
 
 ## File Structure Overview
 
-- `src/main/java/io/vels/ai/weather/helper/Application.java`: Main entry point for the Spring Boot application.
-- `src/main/java/io/vels/ai/weather/helper/client`: Contains clients for interacting with external services such as WeatherClient and ZipCodeClient.
-- `src/main/java/io/vels/ai/weather/helper/config`: Configuration classes for external APIs.
-- `src/main/java/io/vels/ai/weather/helper/model`: Model representations including `WeatherResponse`, `ZipcodeResponse`, and others.
-  
+```
+AI-Weather-App/
+│
+├── src/
+│   ├── main/
+│   │   ├── java/io/vels/ai/weather/helper/
+│   │   │   ├── Application.java
+│   │   │   ├── config/
+│   │   │   │   ├── ZipCodeBaseConfig.java
+│   │   │   │   ├── WeatherConfig.java
+│   │   │   │   ├── AtlassianConfluenceConfig.java
+│   │   │   │   ├── ChatClientConfig.java
+│   │   │   ├── client/
+│   │   │   │   ├── WeatherClient.java
+│   │   │   │   ├── ConfluenceClient.java
+│   │   │   │   ├── ZipCodeClient.java
+│   │   │   ├── interceptor/
+│   │   │   │   ├── CurlRequestInterceptor.java
+│   │   │   ├── model/
+│   │   │   │   ├── weather/
+│   │   │   │   ├── zipcode/
+│   │   │   │   │   ├── ZipcodeResponse.java
+│   │   │   │   │   ├── ...
+│   │   ─── resources/
+│   └── test/
+├── pom.xml
+└── README.md
+```
+
 ## Prerequisites or Dependencies
 
-- **Java 17**: Ensure that Java 17 is installed on your machine.
-- **Maven**: Required for building and running the application.
-- **Spring Boot**: Utilized for the application's framework.
-- **API Keys**: You must acquire API keys for both weather and zip code services.
+- **Java 17** or higher
+- **Maven 3.6** or later
+- **Spring Boot** for application configuration management
 
 ## Contributing
 
-We welcome contributions from the community. Please adhere to the following guidelines:
-1. Fork the repository.
-2. Create a new branch with a descriptive name.
-3. Make your changes and test them thoroughly.
-4. Submit a pull request with a detailed description of your changes.
+Contributions are welcome! Please submit a pull request or open an issue for any proposed changes or features.
 
-## License
+## License Information
 
-Currently, there is no license file available in this repository. Ensure you add a LICENSE file if you intend to open source the application. 
+This project is licensed under the MIT License. See the `LICENSE` file for more information. If the LICENSE file is not present, it's recommended to reach out to the repository owner for clarity on the licensing terms.
 
-**Disclaimer**: Ensure that all utilized external APIs comply with their respective terms of service and usage limits.
+---
 
---- 
-
-This README provides comprehensive details on setting up and using the AI-Weather-App, while outlining its robust features and configuration requirements. Happy coding!
+Happy coding! If you have any questions or need further assistance, feel free to reach out.
