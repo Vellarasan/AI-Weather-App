@@ -1,4 +1,4 @@
-package io.vels.ai.weather.helper.model;
+package io.vels.ai.weather.helper.model.weather;
 
 public record WeatherResponse(Location location, Current current, Forecast forecast) {
     // Root response object containing all weather data

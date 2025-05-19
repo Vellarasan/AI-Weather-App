@@ -1,4 +1,5 @@
-package io.vels.ai.weather.helper.model;
+package io.vels.ai.weather.helper.model.weather;
+
 
 public record Day(
         double maxtemp_c,

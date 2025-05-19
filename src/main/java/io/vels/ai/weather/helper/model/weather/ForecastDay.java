@@ -1,4 +1,4 @@
-package io.vels.ai.weather.helper.model;
+package io.vels.ai.weather.helper.model.weather;
 
 import java.util.List;
 
