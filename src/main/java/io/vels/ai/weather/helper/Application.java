@@ -1,12 +1,13 @@
 package io.vels.ai.weather.helper;
 
+import io.vels.ai.weather.helper.config.AtlassianConfluenceConfig;
 import io.vels.ai.weather.helper.config.WeatherConfig;
 import io.vels.ai.weather.helper.config.ZipCodeBaseConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-@EnableConfigurationProperties({ZipCodeBaseConfig.class, WeatherConfig.class})
+@EnableConfigurationProperties({ZipCodeBaseConfig.class, WeatherConfig.class, AtlassianConfluenceConfig.class})
 @SpringBootApplication
 public class Application {
 

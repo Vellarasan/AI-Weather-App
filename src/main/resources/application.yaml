@@ -23,3 +23,11 @@ external:
         api-key: ${WEATHER_API_KEY}
         base-url: https://api.weatherapi.com/v1
         forecast-by-zip-uri: "/forecast.json?key={api-key}&q={zip}&days={days}"
+    atlassian:
+      confluence:
+        apis:
+          confluence-base-url: ${ATLASSIAN_CONFLUENCE_BASE_URL}
+          pages-context-uri: /wiki/api/v2/pages
+          spaces-context-uri: /wiki/api/v2/spaces
+          confluence-api-token: ${ATLASSIAN_CONFLUENCE_API_TOKEN}
+          confluence-username: ${ATLASSIAN_CONFLUENCE_USERNAME}

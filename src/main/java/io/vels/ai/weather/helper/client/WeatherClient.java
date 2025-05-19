@@ -1,7 +1,7 @@
 package io.vels.ai.weather.helper.client;
 
 import io.vels.ai.weather.helper.config.WeatherConfig;
-import io.vels.ai.weather.helper.model.WeatherResponse;
+import io.vels.ai.weather.helper.model.weather.WeatherResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;

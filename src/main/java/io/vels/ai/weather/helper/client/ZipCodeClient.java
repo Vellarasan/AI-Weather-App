@@ -1,7 +1,7 @@
 package io.vels.ai.weather.helper.client;
 
 import io.vels.ai.weather.helper.config.ZipCodeBaseConfig;
-import io.vels.ai.weather.helper.model.ZipcodeResponse;
+import io.vels.ai.weather.helper.model.zipcode.ZipcodeResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;

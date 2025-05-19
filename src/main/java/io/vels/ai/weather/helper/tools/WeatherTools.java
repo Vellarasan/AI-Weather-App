@@ -2,8 +2,8 @@ package io.vels.ai.weather.helper.tools;
 
 
 import io.vels.ai.weather.helper.client.WeatherClient;
-import io.vels.ai.weather.helper.model.Hour;
-import io.vels.ai.weather.helper.model.WeatherResponse;
+import io.vels.ai.weather.helper.model.weather.Hour;
+import io.vels.ai.weather.helper.model.weather.WeatherResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.tool.annotation.Tool;
@@ -14,7 +14,7 @@ import java.util.List;
 @Component
 public class WeatherTools {
 
-    Logger log = LoggerFactory.getLogger(WeatherTools.class);
+    Logger logger = LoggerFactory.getLogger(WeatherTools.class);
 
     private WeatherClient weatherClient;
 
@@ -27,7 +27,8 @@ public class WeatherTools {
     List<List<Double>> getForeCastByZipCode(int zipcode, int daysCount) {
         WeatherResponse weatherResponse = weatherClient.getForecastByZipForDays(zipcode, daysCount);
 
-        log.info("Zipcode ::: {}", weatherResponse.forecast());
+        logger.info("AI Triggered Tool : getForeCastByZipCode() method");
+
         return weatherResponse
                 .forecast()
                 .forecastday()
