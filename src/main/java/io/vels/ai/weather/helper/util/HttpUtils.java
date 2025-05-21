@@ -50,9 +50,9 @@ public class HttpUtils {
         // Append the URL
         curlCommand
                 .append(" --location ")
-                .append("\'")
+                .append("'")
                 .append(request.getURI())
-                .append("\'")
+                .append("'")
                 .append("\n");
 
         // Append the HTTP Method
@@ -63,11 +63,11 @@ public class HttpUtils {
                 values
                         .forEach(value ->
                                 curlCommand
-                                        .append("--header \'")
+                                        .append("--header '")
                                         .append(name)
                                         .append(": ")
                                         .append(value)
-                                        .append("\' ")
+                                        .append("' ")
                                         .append("\n"))
         );
 

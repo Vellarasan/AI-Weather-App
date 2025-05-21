@@ -15,7 +15,7 @@ import static io.vels.ai.weather.helper.util.HttpUtils.generateCurlCommand;
 @Component
 public class CurlRequestInterceptor implements ClientHttpRequestInterceptor {
 
-    Logger logger = LoggerFactory.getLogger(CurlRequestInterceptor.class);
+    final Logger logger = LoggerFactory.getLogger(CurlRequestInterceptor.class);
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request,

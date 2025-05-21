@@ -11,7 +11,7 @@ public class WeatherClient {
 
     private final WeatherConfig weatherConfig;
 
-    private RestClient restClient;
+    private final RestClient restClient;
 
     public WeatherClient(WeatherConfig weatherConfig) {
         this.weatherConfig = weatherConfig;

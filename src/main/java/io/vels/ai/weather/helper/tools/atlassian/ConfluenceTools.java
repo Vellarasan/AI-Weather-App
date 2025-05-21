@@ -16,7 +16,7 @@ public class ConfluenceTools {
 
     private static final Logger logger = LoggerFactory.getLogger(ConfluenceTools.class);
 
-    private ConfluenceClient confluenceClient;
+    private final ConfluenceClient confluenceClient;
 
     public ConfluenceTools(ConfluenceClient confluenceClient) {
         this.confluenceClient = confluenceClient;

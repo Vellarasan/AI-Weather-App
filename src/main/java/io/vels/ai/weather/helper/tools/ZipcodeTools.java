@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class ZipcodeTools {
 
-    Logger logger = LoggerFactory.getLogger(ZipcodeTools.class);
+    final Logger logger = LoggerFactory.getLogger(ZipcodeTools.class);
 
-    private ZipCodeClient zipCodeClient;
+    private final ZipCodeClient zipCodeClient;
 
     public ZipcodeTools(ZipCodeClient zipCodeClient) {
         this.zipCodeClient = zipCodeClient;
@@ -26,6 +26,6 @@ public class ZipcodeTools {
 
         ZipcodeResponse zipCode = zipCodeClient.getAllByCity(cityName);
 
-        return zipCode.results().get(0);
+        return zipCode.results().getFirst();
     }
 }

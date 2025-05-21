@@ -23,8 +23,8 @@ public class ConfluenceClient {
 
     private static final Logger logger = LoggerFactory.getLogger(ConfluenceClient.class);
 
-    private RestClient restClient;
-    private AtlassianConfluenceConfig confluenceConfig;
+    private final RestClient restClient;
+    private final AtlassianConfluenceConfig confluenceConfig;
 
     public ConfluenceClient(AtlassianConfluenceConfig confluenceConfig) {
         this.restClient = RestClient.builder()

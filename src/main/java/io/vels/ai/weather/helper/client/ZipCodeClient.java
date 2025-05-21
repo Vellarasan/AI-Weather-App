@@ -10,7 +10,7 @@ import org.springframework.web.client.RestClient;
 public class ZipCodeClient {
 
     private final ZipCodeBaseConfig zipCodeBaseConfig;
-    private RestClient restClient;
+    private final RestClient restClient;
 
     public ZipCodeClient(ZipCodeBaseConfig zipCodeBaseConfig) {
         this.zipCodeBaseConfig = zipCodeBaseConfig;

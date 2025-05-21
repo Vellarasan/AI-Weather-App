@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Component
 public class DateTimeTools {
 
-    Logger logger = LoggerFactory.getLogger(DateTimeTools.class);
+    final Logger logger = LoggerFactory.getLogger(DateTimeTools.class);
 
     @Tool(description = "Get the current date and time in the user's timezone")
     String getCurrentDateTime() {

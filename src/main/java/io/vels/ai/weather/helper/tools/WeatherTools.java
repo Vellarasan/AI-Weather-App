@@ -14,9 +14,9 @@ import java.util.List;
 @Component
 public class WeatherTools {
 
-    Logger logger = LoggerFactory.getLogger(WeatherTools.class);
+    final Logger logger = LoggerFactory.getLogger(WeatherTools.class);
 
-    private WeatherClient weatherClient;
+    private final WeatherClient weatherClient;
 
     public WeatherTools(WeatherClient weatherClient) {
         this.weatherClient = weatherClient;
